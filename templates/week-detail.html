@@ -1,0 +1,15 @@
+{% extends 'core.html' %}
+
+{% block center %}
+
+    {% for day in week.day.all %}
+        {{ day }}
+        {% for dish in day.dish.all %}
+            {{ dish }}
+        {% endfor %}
+
+    {% endfor %}
+
+
+{% endblock %}
+
