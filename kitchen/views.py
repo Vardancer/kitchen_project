@@ -14,7 +14,7 @@ class Index(ListView):
 
 class WeekForm(FormView):
     form_class = OrderForm
-    template_name = 'week-detail.html'
+    template_name = 'order.html'
 
     def dispatch(self, request, *args, **kwargs):
         try:
