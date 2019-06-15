@@ -25,5 +25,13 @@ class OrderForm(Form):
                     day.slug: ModelMultipleChoiceField(**field_kwargs)
                 })
 
-
+    def save(self):
+        pass
+        if Order.objects.filter(
+            user=self.user,
+            order_date__isnull=False
+        ).get():
+            print("111")
+        else:
+            print("222")
 

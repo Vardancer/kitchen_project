@@ -1,4 +1,5 @@
 from django.http import Http404
+from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView
 from django.views.generic.edit import FormView, FormMixin
 
@@ -15,6 +16,7 @@ class Index(ListView):
 class WeekForm(FormView):
     form_class = OrderForm
     template_name = 'order.html'
+    success_url = '.'
 
     def dispatch(self, request, *args, **kwargs):
         try:
@@ -35,6 +37,12 @@ class WeekForm(FormView):
             'week': self.week,
         })
         return kwargs
+
+    def form_valid(self, form):
+        self.object = form.save()
+        context = self.get_context_data(form=form)
+        context.update({'success': True})
+        return context
 
 
 class WeekDetailView(DetailView):
