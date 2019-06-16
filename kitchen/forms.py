@@ -27,10 +27,12 @@ class OrderForm(Form):
 
     def save(self):
         pass
-        if Order.objects.filter(
+        q = Order.objects.filter(
             user=self.user,
-            order_date__isnull=False
-        ).get():
+            week=self.week
+        )
+        print(q.query)
+        if q:
             print("111")
         else:
             print("222")

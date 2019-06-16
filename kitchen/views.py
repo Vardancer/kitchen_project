@@ -42,7 +42,7 @@ class WeekForm(FormView):
         self.object = form.save()
         context = self.get_context_data(form=form)
         context.update({'success': True})
-        return context
+        return self.render_to_response(context)
 
 
 class WeekDetailView(DetailView):
