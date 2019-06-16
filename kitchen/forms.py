@@ -1,4 +1,4 @@
-from kitchen.models import Week, Order
+from kitchen.models import Week, Order, Dish
 from django.forms import Form, ModelMultipleChoiceField, CheckboxSelectMultiple
 
 
@@ -31,9 +31,15 @@ class OrderForm(Form):
             user=self.user,
             week=self.week
         )
-        print(q.query)
+        # print(q.query)
         if q:
             print("111")
         else:
             print("222")
+            for m in self.week.day.all():
+                response = self.cleaned_data.get(m.slug)
+                # r = Dish.objects.filter(days__slug=m.slug)
+                # print(r)
+                for pr in response:
+                    print(pr.price)
 
