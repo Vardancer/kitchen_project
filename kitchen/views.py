@@ -6,6 +6,7 @@ from django.views.generic.edit import FormView, FormMixin
 
 from kitchen import models as m
 from kitchen.forms import OrderForm
+from kitchen.models import Order
 
 
 class Index(ListView):
@@ -48,3 +49,9 @@ class WeekForm(FormView):
 class WeekDetailView(DetailView):
     template_name = 'week-detail.html'
     model = m.Week
+
+
+class OrderView(DetailView):
+    model = Order
+    template_name = 'order-view.html'
+
