@@ -1,5 +1,6 @@
 from kitchen.models import Week, Order, Dish, OrdersTransit, Day
 from django.forms import Form, ModelMultipleChoiceField, CheckboxSelectMultiple, CheckboxInput, Select
+from django.db.models import Prefetch
 
 
 class OrderForm(Form):
@@ -8,22 +9,23 @@ class OrderForm(Form):
         self.user = kwargs.pop('user')
         super(OrderForm, self).__init__(*args, **kwargs)
 
-        days = Day.objects.filter(week=self.week).prefetch_related('week__day')
-        dishes = Dish.objects.prefetch_related('days__dish').filter(days__week=self.week)
-        # print(dishes.query)
-        for d in days:
-            print(d.slug)
-            queryset = dishes.filter(days=d)
-            print(queryset)
-            # if queryset:
-            #     field_kwargs = {
-            #         'label': d,
-            #         'queryset': queryset,
-            #         'widget': CheckboxSelectMultiple,
-            #     }
-            #     self.fields.update({
-            #         d.slug: ModelMultipleChoiceField(**field_kwargs)
-            #     })
+        days = Day.objects.filter(week=self.week).prefetch_related('dish')
+        # dishes = Dish.objects.prefetch_related('name')
+        # print(days)
+        # print(dishes)
+        for d in days.all():
+            # print(d.dish.name)
+            queryset = d.dish.all()
+            # print(queryset.query)
+            if queryset:
+                field_kwargs = {
+                    'label': d,
+                    'queryset': queryset,
+                    'widget': CheckboxSelectMultiple,
+                }
+                self.fields.update({
+                    d.slug: ModelMultipleChoiceField(**field_kwargs)
+                })
 
         # for day in self.week.day.all():
         #     queryset = day.dish.all()
