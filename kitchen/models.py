@@ -24,7 +24,7 @@ class Day(models.Model):
     """
     name = models.CharField(max_length=100)
     slug = models.SlugField(max_length=200)
-    dish = models.ManyToManyField('Dish', related_name='days')
+    dish = models.ManyToManyField('Dish', related_name='dishes')
     date_added = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
