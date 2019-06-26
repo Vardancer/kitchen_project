@@ -10,19 +10,18 @@ class OrderForm(Form):
 
         days = Day.objects.filter(week=self.week).prefetch_related('dish')
 
-        print(days)
-        # print(dishes)
         for d in days:
-            # print(d.dish.name)
             queryset = d.dish.all()
-            # print(d)
-            # print(queryset.query)
             if queryset:
                 field_kwargs = {
                     'label': d,
                     'queryset': queryset,
                     'widget': CheckboxSelectMultiple,
                 }
+                if self.initial.get(d.slug):
+                    field_kwargs.update({
+                        'initial': self.initial.get(d.slug)
+                    })
                 self.fields.update({
                     d.slug: ModelMultipleChoiceField(**field_kwargs)
                 })
@@ -43,6 +42,15 @@ class OrderForm(Form):
         #         self.fields.update({
         #             day.slug: ModelMultipleChoiceField(**field_kwargs)
         #         })
+
+    def get_initial(self):
+        initial = {}
+        if self.user:
+            orders = Order.objects.filter(week=self.week).prefetch_related('dish')
+            days = Day.objects.filter(week=self.week).prefetch_related('dish')
+            for day in days:
+                initial[day.slug] = [dish.pk for dish in orders.dish.all()]
+        return initial
 
     def save(self):
         days = Day.objects.filter(week=self.week).prefetch_related('dish__dishes')
