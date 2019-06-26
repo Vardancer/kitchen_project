@@ -1,5 +1,6 @@
 from kitchen.models import Week, Order, Dish, OrdersTransit, Day
 from django.forms import Form, ModelMultipleChoiceField, CheckboxSelectMultiple, CheckboxInput, Select
+from collections import UserList
 
 
 class OrderForm(Form):
@@ -49,17 +50,13 @@ class OrderForm(Form):
         vals = []
         t_price = 0
         for day in days.all():
-            # print(day.slug)
             resp = self.cleaned_data.get(day.slug)
             for r in resp:
-                # r.update({'cost': 111.01})
                 t_price += r.price
-                vals.append((r.id, r.price,))
-            print(resp)
-        # ord, ordlog = Order.objects.get_or_create(week=self.week, user=self.user, total_cost=t_price)
-        vals2 = []
+                vals.append(OrdersTransit(dish_id=r.id, cost=r.price))
+        ord, ordlog = Order.objects.get_or_create(week=self.week, user=self.user, total_cost=t_price)
+
         for v in vals:
-            vals2.append(v)
-        # todo tuple dish_obj(got id), order_obj(done), dish_price(done), optional_is_half(bool)
-        # OrdersTransit.objects.update_or_create()
-        print(vals2)
+            v.order = ord
+        OrdersTransit.objects.bulk_create(vals)
+
