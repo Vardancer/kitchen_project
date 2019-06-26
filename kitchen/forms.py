@@ -1,6 +1,5 @@
 from kitchen.models import Week, Order, Dish, OrdersTransit, Day
 from django.forms import Form, ModelMultipleChoiceField, CheckboxSelectMultiple, CheckboxInput, Select
-from collections import UserList
 
 
 class OrderForm(Form):
