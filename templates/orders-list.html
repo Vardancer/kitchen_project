@@ -1,0 +1,10 @@
+{% extends 'core.html' %}
+
+{% block center %}
+
+{% for order in order_list %}
+    <a href=" {% url 'order-edit' order.id %}">{{ order }}</a>
+{% endfor %}
+
+{% endblock %}
+

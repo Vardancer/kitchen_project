@@ -1,12 +1,12 @@
 from django.http import Http404
 from django.urls import reverse_lazy
-from django.views.generic import ListView, DetailView
+from django.views.generic import ListView, DetailView, UpdateView
 from django.views.generic.edit import FormView, FormMixin
 
 
 from kitchen import models as m
 from kitchen.forms import OrderForm
-from kitchen.models import Order
+from kitchen.models import Order, OrdersTransit
 
 
 class Index(ListView):
@@ -14,7 +14,7 @@ class Index(ListView):
     template_name = "week-list.html"
 
 
-class WeekForm(FormView):
+class OrderFormView(FormView):
     form_class = OrderForm
     template_name = 'order.html'
     success_url = '.'
@@ -24,7 +24,7 @@ class WeekForm(FormView):
             self.week = m.Week.objects.get(pk=kwargs.get('pk'))
         except m.Week.DoesNotExist:
             raise Http404
-        return super(WeekForm, self).dispatch(request, *args, **kwargs)
+        return super(OrderFormView, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -32,7 +32,7 @@ class WeekForm(FormView):
         return context
 
     def get_form_kwargs(self):
-        kwargs = super(WeekForm, self).get_form_kwargs()
+        kwargs = super(OrderFormView, self).get_form_kwargs()
         kwargs.update({
             'user': self.request.user,
             'week': self.week,
@@ -51,7 +51,19 @@ class WeekDetailView(DetailView):
     model = m.Week
 
 
-class OrderView(DetailView):
+class OrderUpdateView(UpdateView):
     model = Order
-    template_name = 'order-view.html'
+    template_name = 'order-edit.html'
+    fields = ['dish']
+
+    # def get_queryset(self):
+    #     # queryset = super(OrderUpdateView, self).get_queryset()
+    #     queryset = Order.objects.prefetch_related('dish')
+    #     return queryset
+
+
+class OrderListView(ListView):
+    model = Order
+    template_name = 'orders-list.html'
+
 

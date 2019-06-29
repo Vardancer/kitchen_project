@@ -1,0 +1,23 @@
+{% extends 'core.html' %}
+
+{% block center %}
+
+    {{ order }}
+    <form action="." method="post">
+
+        <ul>
+            {% for zakaz in order.dish.all %}
+                <li>
+                    {{ zakaz }} -- {{ zakaz.is_half }}
+
+                </li>
+            {% endfor %}
+
+        </ul>
+
+    <button type="submit">Submit</button>
+    </form>
+
+
+
+{% endblock %}
