@@ -1,5 +1,6 @@
 from kitchen.models import Week, Order, Dish, OrdersTransit, Day
-from django.forms import Form, ModelMultipleChoiceField, CheckboxSelectMultiple, CheckboxInput, Select
+from django.forms import Form, ModelMultipleChoiceField, CheckboxSelectMultiple, CheckboxInput, Select, \
+    MultipleChoiceField, ChoiceField
 
 
 class OrderForm(Form):
@@ -9,7 +10,6 @@ class OrderForm(Form):
         super(OrderForm, self).__init__(*args, **kwargs)
 
         days = Day.objects.filter(week=self.week).prefetch_related('dish')
-
         for d in days:
             queryset = d.dish.all()
             if queryset:
@@ -17,13 +17,15 @@ class OrderForm(Form):
                     'label': d,
                     'queryset': queryset,
                     'widget': CheckboxSelectMultiple,
+                    'required': False,
                 }
                 if self.initial.get(d.slug):
                     field_kwargs.update({
                         'initial': self.initial.get(d.slug)
                     })
                 self.fields.update({
-                    d.slug: ModelMultipleChoiceField(**field_kwargs)
+                    d.slug: ModelMultipleChoiceField(**field_kwargs),
+                    'is_half': ChoiceField(widget=CheckboxInput, label='is_half', choices=('is_half', 'is_half'))
                 })
 
         # for day in self.week.day.all():
