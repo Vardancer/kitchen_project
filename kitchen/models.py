@@ -43,6 +43,7 @@ class Dish(models.Model):
     ingredients = models.CharField(max_length=255, blank=True, null=True)
     price = models.DecimalField(max_digits=16, decimal_places=2)
     date_added = models.DateTimeField(auto_now_add=True)
+    is_half = models.BooleanField(default=False)
 
     def __str__(self):
         return "Dish {} with cost {}".format(self.name, self.price)
